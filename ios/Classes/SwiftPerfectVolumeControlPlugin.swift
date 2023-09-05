@@ -24,14 +24,20 @@ public class SwiftPerfectVolumeControlPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "getVolume":
-            self.getVolume(call, result: result);
-            break;
+            self.getVolume(call, result: result)
+            break
         case "setVolume":
-            self.setVolume(call, result: result);
-            break;
+            self.setVolume(call, result: result)
+            break
         case "hideUI":
-            self.hideUI(call, result: result);
-            break;
+            self.hideUI(call, result: result)
+            break
+        case "pause":
+            self.pause(call, result: result)
+            break
+        case "resume":
+            self.resume(call, result: result)
+            break
         default:
             result(FlutterMethodNotImplemented);
         }
@@ -80,6 +86,24 @@ public class SwiftPerfectVolumeControlPlugin: NSObject, FlutterPlugin {
             volumeView.removeFromSuperview();
         }
         result(nil);
+    }
+    
+    public func pause(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+            result(nil)
+        } catch let error as NSError {
+            result(FlutterError(code: String(error.code), message: "\(error.localizedDescription)", details: "\(error.localizedDescription)"));
+        }
+    }
+    
+    public func resume(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+            result(nil)
+        } catch let error as NSError {
+            result(FlutterError(code: String(error.code), message: "\(error.localizedDescription)", details: "\(error.localizedDescription)"));
+        }
     }
 
     /// 绑定监听器

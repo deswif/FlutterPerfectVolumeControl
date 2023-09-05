@@ -53,4 +53,12 @@ class PerfectVolumeControl {
     assert(volume >= 0 && volume <= 1);
     return await _channel.invokeMethod('setVolume', {"volume": volume});
   }
+
+  static Future<void> pause() async {
+    return await _channel.invokeMethod('pause');
+  }
+
+  static Future<void> resume() async {
+    return await _channel.invokeMethod('resume');
+  }
 }

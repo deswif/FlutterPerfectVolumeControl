@@ -12,14 +12,17 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   TextEditingController _textEditingController = TextEditingController();
 
-  StreamSubscription<double> _subscription;
+  StreamSubscription<double>? _subscription;
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
     // Bind listener
     _subscription = PerfectVolumeControl.stream.listen((value) {
       _textEditingController.text = "listener: $value";
@@ -30,8 +33,20 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     super.dispose();
 
+    WidgetsBinding.instance.removeObserver(this);
+
     // Remove listener
-    _subscription.cancel();
+    _subscription?.cancel();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      PerfectVolumeControl.pause();
+    } else if (state == AppLifecycleState.resumed) {
+      PerfectVolumeControl.resume();
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
